@@ -1,12 +1,10 @@
-
 //Editar
 let objetivo = 30;
-let TextoPuntaje = "Borrachas Eliminadas: ";
+let TextoPuntaje = "Monos Eliminados: ";
 let TextoVictoria = "¡VICTORIA!";
 let TextoDerrota = "DERROTA";
 //
 
-//Youtube: https://www.youtube.com/watch?v=Oat0bMq5NGc
 
 const heart = document.getElementById("heart-icon");
 const arrowLeft = document.getElementById("arrow-left");
@@ -20,7 +18,7 @@ const btnPlay = document.getElementById("btn-play");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const background = new Image();
-background.src = '/background.jpg';
+background.src = 'background.jpg';
 let backgroundOnload = false;
 background.onload = () => {
     backgroundOnload = true;
@@ -38,7 +36,6 @@ document.addEventListener('contextmenu', function (event) {
 
 function resize() {
     if (innerWidth < 600) {
-
         canvas.width = 400;
         canvas.height = 480;
         if (innerWidth < 400) {
@@ -48,7 +45,6 @@ function resize() {
     } else {
         canvas.width = 550;
         canvas.height = 600;
-
     }
 }
 window.addEventListener("resize", () => {
@@ -61,7 +57,7 @@ class Projectile {
         this.scale = 0.2;
         this.position = position;
         const image = new Image();
-        image.src = '/heart.png';
+        image.src = 'heart.png';
         image.onload = () => {
             this.image = image;
             this.width = image.width * this.scale;
@@ -103,7 +99,7 @@ class Enemy {
         this.scale = 0.2;
         this.position = {};
         const image = new Image();
-        image.src = '/enemy.png';
+        image.src = 'enemy.png';
         image.onload = () => {
             this.image = image;
             this.width = image.width * this.scale;
@@ -125,9 +121,7 @@ class Enemy {
         if (this.image) {
             this.draw();
             this.position.y += this.velocity;
-
         }
-
     }
 
     collisions(object) {
@@ -156,7 +150,7 @@ class Player {
         this.scale = 0.2;
         this.projectiles = [];
         const image = new Image();
-        image.src = '/player.png';
+        image.src = 'player.png';
         image.onload = () => {
             this.image = image;
             this.width = image.width * this.scale;
@@ -164,44 +158,42 @@ class Player {
             this.position = { x: 50, y: canvas.height - this.height }
         }
         this.keys = {
-            A: false,
-            D: false,
+            left: false,
+            right: false,
             shoot: false
         }
         this.keyboard();
     }
     draw() {
-
         ctx.drawImage(this.image, this.position.x, this.position.y,
             this.width, this.height);
     }
     update() {
         if (this.image) {
             this.draw();
-            if (this.keys.D) {
+            if (this.keys.right) {
                 this.position.x += this.velocity;
                 if (this.position.x + this.width > canvas.width) {
                     this.position.x = canvas.width - this.width;
                 }
             }
-            if (this.keys.A) {
+            if (this.keys.left) {
                 this.position.x -= this.velocity;
                 if (this.position.x < 0) {
                     this.position.x = 0;
                 }
             }
         }
-
     }
     keyboard() {
         document.addEventListener("keydown", (evt) => {
-            if (evt.key == "a" || evt.key == "A") {
-                this.keys.A = true;
+            if (evt.key == "ArrowLeft") {
+                this.keys.left = true;
             }
-            if (evt.key == "d" || evt.key == "D") {
-                this.keys.D = true;
+            if (evt.key == "ArrowRight") {
+                this.keys.right = true;
             }
-            if (evt.key == "ArrowUp" && this.keys.shoot && !this.keys.A && !this.keys.D) {
+            if (evt.key == "ArrowUp" && this.keys.shoot && !this.keys.left && !this.keys.right) {
                 this.projectiles.push(
                     new Projectile({
                         x: this.position.x + (this.width / 2) - 5,
@@ -212,20 +204,18 @@ class Player {
             }
         });
         document.addEventListener("keyup", (evt) => {
-            if (evt.key == "a" || evt.key == "A") {
-                this.keys.A = false;
+            if (evt.key == "ArrowLeft") {
+                this.keys.left = false;
             }
-            if (evt.key == "d" || evt.key == "D") {
-                this.keys.D = false;
+            if (evt.key == "ArrowRight") {
+                this.keys.right = false;
             }
             if (evt.key == "ArrowUp") {
-
                 this.keys.shoot = true;
             }
         });
         heart.addEventListener("touchstart", () => {
-
-            if (!this.keys.D && !this.keys.A) {
+            if (!this.keys.right && !this.keys.left) {
                 this.projectiles.push(
                     new Projectile({
                         x: this.position.x + (this.width / 2) - 5,
@@ -237,30 +227,28 @@ class Player {
                     heart.style.fontSize = "60px";
                 }, 100);
             }
-
         });
         arrowLeft.addEventListener("touchstart", () => {
             arrowLeft.style.color = "white";
-            this.keys.A = true;
+            this.keys.left = true;
             heart.style.color = "rgb(255, 255, 255,0.3)";
         });
         arrowLeft.addEventListener("touchend", () => {
-            this.keys.A = false;
+            this.keys.left = false;
             arrowLeft.style.color = "rgb(255, 255, 255,0.6)";
             heart.style.color = "red";
         });
         arrowRight.addEventListener("touchstart", () => {
             arrowRight.style.color = "white";
-            this.keys.D = true;
+            this.keys.right = true;
             heart.style.color = "rgb(255, 255, 255,0.3)";
         });
         arrowRight.addEventListener("touchend", () => {
-            this.keys.D = false;
+            this.keys.right = false;
             arrowRight.style.color = "rgb(255, 255, 255,0.6)";
             heart.style.color = "red";
         });
     }
-
 }
 const player = new Player();
 const enemys = [];
@@ -288,11 +276,9 @@ function updateObjects() {
     for (let j = 0; j < player.projectiles.length; j++) {
         const p = player.projectiles[j];
         p.update();
-
         for (let i = 0; i < enemys.length; i++) {
             const e = enemys[i];
             const collisionResult = p.collisions(e);
-
             if (collisionResult === 1) {
                 player.projectiles.splice(j, 1);
                 j--;
@@ -310,7 +296,6 @@ function updateObjects() {
     for (var i = enemys.length - 1; i >= 0; i--) {
         var e = enemys[i];
         e.update();
-
         if (e.collisions(player) === 1) {
             enemys.splice(i, 1);
             death = true;
@@ -319,8 +304,6 @@ function updateObjects() {
             death = true;
         }
     }
-
-
 }
 
 function update() {
@@ -343,4 +326,3 @@ function update() {
 }
 
 init();
-
